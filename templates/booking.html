@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book an Appointment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-semibold text-gray-800">Find a Doctor</h1>
+            <a href="/dashboard" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">
+                Back to Dashboard
+            </a>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-6">
+        <section id="doctor-search" class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Search by Specialization</h2>
+            <form id="search-form" class="flex space-x-4">
+                <input type="text" id="search-spec" placeholder="e.g., Cardiology" class="flex-grow px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300">Search</button>
+                <button type="button" id="clear-search" class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition duration-300">Show All</button>
+            </form>
+        </section>
+
+        <section id="doctor-list-section">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Available Doctors</h2>
+            <p id="booking-message" class="text-center text-lg font-medium mb-4"></p>
+            <div id="doctor-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+        </section>
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+</body>
+</html>

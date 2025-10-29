@@ -14,7 +14,7 @@ function handleLoginPage() {
         event.preventDefault();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-        
+
         loginMessage.classList.remove('text-green-600', 'text-red-600');
 
         try {
@@ -41,7 +41,6 @@ function handleLoginPage() {
     });
 }
 
-// --- DASHBOARD PAGE LOGIC ---
 let currentAppointmentId = null;
 
 function handleDashboardPage() {
@@ -76,7 +75,7 @@ function handleDashboardPage() {
 
         const visit_notes = document.getElementById('visit-notes').value;
         const status = document.getElementById('visit-status').value;
-        
+
         updateMessage.classList.remove('text-green-600', 'text-red-600');
 
         try {
@@ -108,7 +107,7 @@ function handleDashboardPage() {
         const medication_name = document.getElementById('med-name').value;
         const dosage = document.getElementById('med-dosage').value;
         const instructions = document.getElementById('med-instructions').value;
-        
+
         prescriptionMessage.classList.remove('text-green-600', 'text-red-600');
 
         try {
@@ -132,7 +131,7 @@ function handleDashboardPage() {
                 prescriptionMessage.textContent = `Error: ${result.error}`;
                 prescriptionMessage.classList.add('text-red-600');
             }
-        } catch (err){
+        } catch (err) {
             prescriptionMessage.textContent = 'A network error occurred.';
             prescriptionMessage.classList.add('text-red-600');
         }
@@ -170,7 +169,7 @@ async function fetchDoctorAppointments(doctorId) {
 
                 document.getElementById('forms-container').classList.remove('hidden');
                 document.getElementById('no-appointment-selected').classList.add('hidden');
-                
+
                 document.getElementById('update-message').textContent = '';
                 document.getElementById('prescription-message').textContent = '';
                 document.getElementById('issue-prescription-form').reset();

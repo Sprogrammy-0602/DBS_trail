@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - Smart Hospital System</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<body class="app-theme flex items-center justify-center min-h-screen">
+    <button id="theme-toggle" class="theme-toggle btn btn-neutral" aria-label="Toggle theme"><span
+            class="icon">🌙</span></button>
+    <div class="backdrop-blob"></div>
     <main class="text-center">
-        <h1 class="text-5xl font-bold text-gray-800 mb-12">Smart Hospital Management System</h1>
+        <h1 class="text-5xl font-bold headline-gradient mb-12">Smart Hospital Management System</h1>
         <div class="flex flex-col md:flex-row gap-8">
 
-            <a href="/patient" class="block bg-white p-10 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 w-80">
-                <h2 class="text-3xl font-semibold text-blue-600 mb-4">Patient Portal</h2>
-                <p class="text-gray-600">Login or register as a patient to manage your appointments and prescriptions.</p>
+            <a href="/patient" class="block elevated-card p-10 w-80">
+                <h2 class="text-3xl font-semibold card-title mb-4">Patient Portal</h2>
+                <p class="text-gray-300">Login or register as a patient to manage your appointments and prescriptions.
+                </p>
             </a>
 
-            <a href="/doctor/login" class="block bg-white p-10 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 w-80">
-                <h2 class="text-3xl font-semibold text-indigo-600 mb-4">Doctor Portal</h2>
-                <p class="text-gray-600">Login as a doctor to manage your schedule and patient visits.</p>
+            <a href="/doctor/login" class="block elevated-card p-10 w-80">
+                <h2 class="text-3xl font-semibold card-title mb-4">Doctor Portal</h2>
+                <p class="text-gray-300">Login as a doctor to manage your schedule and patient visits.</p>
             </a>
 
         </div>
     </main>
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </body>
+
 </html>

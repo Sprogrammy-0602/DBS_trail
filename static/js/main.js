@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    // --- REGISTRATION FORM ---
     const registerForm = document.getElementById('register-form');
     const registerMessage = document.getElementById('register-message');
 
@@ -21,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const result = await response.json();
 
-            // Clear old classes
             registerMessage.classList.remove('text-green-600', 'text-red-600');
 
             if (response.ok) {
@@ -38,8 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    
-    // --- LOGIN FORM ---
+
     const loginForm = document.getElementById('login-form');
     const loginMessage = document.getElementById('login-message');
 
@@ -56,14 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(loginData)
             });
             const result = await response.json();
-            
-            // Clear old classes
+
             loginMessage.classList.remove('text-green-600', 'text-red-600');
 
             if (response.ok) {
                 loginMessage.textContent = result.message;
                 loginMessage.classList.add('text-green-600');
-                
+
                 localStorage.setItem('patient_id', result.patient_id);
                 localStorage.setItem('patient_name', result.first_name);
 

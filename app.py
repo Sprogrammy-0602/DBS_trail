@@ -1,22 +1,18 @@
-#$pongyDB2005
 from flask import Flask, jsonify, request, render_template 
 import mysql.connector
 from mysql.connector import Error
 from flask_bcrypt import Bcrypt 
 
-# Initialize the Flask app
 app = Flask(__name__)
-bcrypt = Bcrypt(app) # Initialize bcrypt
+bcrypt = Bcrypt(app)
 
-# --- Database Configuration ---
 db_config = {
     'host': 'localhost',
     'user': 'root', 
-    'password': '$pongyDB2005', # Make sure this is your correct password
+    'password': '$pongyDB2005',
     'database': 'smart_hospital_db'
 }
 
-# --- Helper Function to Create Connection ---
 def create_db_connection():
     try:
         conn = mysql.connector.connect(**db_config)
@@ -25,41 +21,26 @@ def create_db_connection():
         print(f"Error: {err}")
         return None
 
-# --- Test Route ---
-# === FRONTEND ROUTE ===
-# ---
 @app.route('/')
 def index():
-    # This serves your main HTML page
     return render_template('index.html')
 @app.route('/patient')
 def patient_portal():
-    # This serves the patient login/register page
     return render_template('patient_portal.html')
-# NEW dashboard route
 @app.route('/dashboard')
 def dashboard():
-    # This will serve the patient dashboard
     return render_template('dashboard.html')
-# --- 🚀 NEW DOCTOR ROUTES ---
 @app.route('/doctor/login')
 def doctor_login_page():
-    # This serves the doctor login page
     return render_template('doctor_login.html')
 
 @app.route('/doctor/dashboard')
 def doctor_dashboard_page():
-    # This serves the doctor dashboard
     return render_template('doctor_dashboard.html')
 @app.route('/booking')
 def booking_page():
-    # This serves the doctor search/booking page
     return render_template('booking.html')
-# ---
-# === PATIENT AUTHENTICATION ===
-# ---
 
-# --- Patient Registration Endpoint ---
 @app.route('/api/register/patient', methods=['POST'])
 def register_patient():
     data = request.get_json()
@@ -98,7 +79,6 @@ def register_patient():
         cursor.close()
         conn.close()
 
-# --- Patient Login Endpoint ---
 @app.route('/api/login/patient', methods=['POST'])
 def login_patient():
     data = request.get_json()
@@ -139,17 +119,13 @@ def login_patient():
         cursor.close()
         conn.close()
 
-# ---
-# === DOCTOR AUTHENTICATION ===
-# ---
 
-# --- Doctor Registration Endpoint ---
 @app.route('/api/register/doctor', methods=['POST'])
 def register_doctor():
     data = request.get_json()
     first_name = data.get('first_name')
     last_name = data.get('last_name')
-    specialization = data.get('specialization') # Added specialization
+    specialization = data.get('specialization')
     email = data.get('email')
     password = data.get('password')
 
@@ -183,7 +159,6 @@ def register_doctor():
         cursor.close()
         conn.close()
 
-# --- Doctor Login Endpoint ---
 @app.route('/api/login/doctor', methods=['POST'])
 def login_doctor():
     data = request.get_json()
@@ -226,11 +201,7 @@ def login_doctor():
         conn.close()
 
 
-# ---
-# === CORE FUNCTIONALITY ===
-# ---
 
-# --- Doctor Search Endpoint ---
 @app.route('/api/doctors', methods=['GET'])
 def get_doctors():
     specialization = request.args.get('specialization')
@@ -261,13 +232,12 @@ def get_doctors():
         cursor.close()
         conn.close()
 
-# --- Book Appointment Endpoint ---
 @app.route('/api/appointments/book', methods=['POST'])
 def book_appointment():
     data = request.get_json()
     patient_id = data.get('patient_id')
     doctor_id = data.get('doctor_id')
-    appointment_time = data.get('appointment_time') # e.g., "2025-11-20 10:00:00"
+    appointment_time = data.get('appointment_time')
 
     if not patient_id or not doctor_id or not appointment_time:
         return jsonify({"error": "patient_id, doctor_id, and appointment_time are required"}), 400
@@ -297,7 +267,6 @@ def book_appointment():
         cursor.close()
         conn.close()
 
-# --- Get Patient's Appointments (Dashboard) ---
 @app.route('/api/patients/<int:patient_id>/appointments', methods=['GET'])
 def get_patient_appointments(patient_id):
     conn = create_db_connection()
@@ -323,7 +292,6 @@ def get_patient_appointments(patient_id):
         cursor.close()
         conn.close()
 
-# --- Get Doctor's Appointments (Dashboard) ---
 @app.route('/api/doctors/<int:doctor_id>/appointments', methods=['GET'])
 def get_doctor_appointments(doctor_id):
     conn = create_db_connection()
@@ -349,7 +317,6 @@ def get_doctor_appointments(doctor_id):
         cursor.close()
         conn.close()
 
-# --- Update Appointment (Add Notes/Complete) ---
 @app.route('/api/appointments/<int:appointment_id>', methods=['PUT'])
 def update_appointment(appointment_id):
     data = request.get_json()
@@ -396,7 +363,6 @@ def update_appointment(appointment_id):
         cursor.close()
         conn.close()
 
-# --- Issue Prescription ---
 @app.route('/api/prescriptions/issue', methods=['POST'])
 def issue_prescription():
     data = request.get_json()
@@ -433,53 +399,8 @@ def issue_prescription():
         cursor.close()
         conn.close()
 
-# ---
-# 🚀 NEW CODE: GET PATIENT'S PRESCRIPTIONS
-# ---
-# @app.route('/api/patients/<int:patient_id>/prescriptions', methods=['GET'])
-# def get_patient_prescriptions(patient_id):
-#     conn = create_db_connection()
-#     if conn is None:
-#         return jsonify({"error": "Database connection failed"}), 500
-    
-#     cursor = conn.cursor(dictionary=True)
-    
-#     try:
-#         # This query joins three tables to get all info
-#         query = """
-#             SELECT 
-#                 pres.medication_name,
-#                 pres.dosage,
-#                 pres.instructions,
-#                 app.appointment_time,
-#                 doc.first_name AS doctor_first_name,
-#                 doc.last_name AS doctor_last_name
-#             FROM Prescriptions pres
-#             JOIN Appointments app ON pres.appointment_id = app.appointment_id
-#             JOIN Doctors doc ON app.doctor_id = doc.doctor_id
-#             WHERE app.patient_id = %s
-#             ORDER BY app.appointment_time DESC
-#         """
-        
-#         cursor.execute(query, (patient_id,))
-#         prescriptions = cursor.fetchall()
-        
-#         return jsonify(prescriptions), 200
-
-#     except Error as err:
-#         return jsonify({"error": str(err)}), 500
-    
-#     finally:
-#         cursor.close()
-#         conn.close()
-
-# newwwww
 @app.route('/api/patients/<int:patient_id>/prescriptions', methods=['GET'])
 def get_patient_prescriptions(patient_id):
-    # (This endpoint already exists, just showing it for context)
-    # ...
-    # We MUST add 'pres.prescription_id' and 'pres.is_ordered'
-    # to the query for the pharmacy to work.
     
     conn = create_db_connection()
     if conn is None:
@@ -488,7 +409,6 @@ def get_patient_prescriptions(patient_id):
     cursor = conn.cursor(dictionary=True)
     
     try:
-        # --- 👇 MODIFIED QUERY - PLEASE UPDATE THIS FUNCTION 👇 ---
         query = """
             SELECT 
                 pres.prescription_id, 
@@ -526,7 +446,7 @@ def create_pharmacy_order():
     data = request.get_json()
     patient_id = data.get('patient_id')
     shipping_address = data.get('shipping_address')
-    prescription_ids = data.get('prescription_ids') # This will be a list [1, 2, 3]
+    prescription_ids = data.get('prescription_ids')
 
     if not patient_id or not shipping_address or not prescription_ids:
         return jsonify({"error": "patient_id, shipping_address, and a list of prescription_ids are required"}), 400
@@ -538,36 +458,28 @@ def create_pharmacy_order():
     cursor = conn.cursor()
 
     try:
-        # --- Transaction Step 1: Create the main order ---
         order_query = """
         INSERT INTO PharmacyOrders (patient_id, shipping_address, status) 
         VALUES (%s, %s, 'Pending')
         """
         cursor.execute(order_query, (patient_id, shipping_address))
         
-        # Get the ID of the order we just created
         new_order_id = cursor.lastrowid 
 
-        # --- Transaction Step 2: Link prescriptions to the order in OrderItems ---
         item_query = "INSERT INTO OrderItems (order_id, prescription_id) VALUES (%s, %s)"
-        # Create a list of tuples: [(new_order_id, p_id1), (new_order_id, p_id2)]
         order_items = [(new_order_id, p_id) for p_id in prescription_ids]
         
         cursor.executemany(item_query, order_items) # executemany is efficient
 
-        # --- Transaction Step 3: Mark prescriptions as 'Yes' (ordered) ---
-        # We need a placeholder for each ID in the list: (%s, %s, %s)
         placeholders = ', '.join(['%s'] * len(prescription_ids))
         update_pres_query = f"UPDATE Prescriptions SET is_ordered = 'Yes' WHERE prescription_id IN ({placeholders})"
         
         cursor.execute(update_pres_query, tuple(prescription_ids))
 
-        # If all steps succeeded, commit the transaction
         conn.commit()
         return jsonify({"message": "Order placed successfully!", "order_id": new_order_id}), 201
 
     except Error as err:
-        # If any step fails, roll back all changes
         conn.rollback()
         return jsonify({"error": str(err)}), 500
     finally:
@@ -586,7 +498,6 @@ def get_patient_orders(patient_id):
     cursor = conn.cursor(dictionary=True)
     
     try:
-        # This complex query joins 4 tables to get full order details
         query = """
             SELECT 
                 po.order_id,
@@ -602,7 +513,6 @@ def get_patient_orders(patient_id):
         """
         cursor.execute(query, (patient_id,))
         
-        # Group the results by order_id
         orders = {}
         for row in cursor.fetchall():
             order_id = row['order_id']
@@ -617,7 +527,6 @@ def get_patient_orders(patient_id):
                 f"{row['medication_name']} ({row['dosage']})"
             )
         
-        # Convert the dictionary of orders into a list
         return jsonify(list(orders.values())), 200
 
     except Error as err:
@@ -626,6 +535,5 @@ def get_patient_orders(patient_id):
         cursor.close()
         conn.close()
         
-# --- Run the App ---
 if __name__ == '__main__':
     app.run(debug=True)
